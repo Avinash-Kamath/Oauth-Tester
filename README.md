@@ -1,5 +1,8 @@
 # Oauth-Tester
-A simple Test UI for testing Outh Flow
+A simple Test UI for testing Outh Flow. 
+- View Decoded ID outh tokens 
+- Refresh Tokens id refresh token is available
+- Timer for access token discovery for easy debugging
 
 ## View Tokens
 ![image](https://github.com/user-attachments/assets/0f5de532-64ec-40ee-9925-770845ed2c1b)
