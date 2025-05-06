@@ -12,6 +12,8 @@ CLIENT_ID = ''
 CLIENT_SECRET = ''
 AUTHORIZATION_ENDPOINT = ''
 TOKEN_ENDPOINT = ''
+
+#add this in your IDP as redirect URI
 REDIRECT_URI = 'http://localhost:5555/callback'
 SCOPES = 'openid profile email offline_access'
 
