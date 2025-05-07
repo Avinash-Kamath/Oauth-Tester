@@ -10,8 +10,8 @@ app = Flask(__name__)
 # === CONFIGURATION ===
 CLIENT_ID = ''
 CLIENT_SECRET = ''
-AUTHORIZATION_ENDPOINT = ''
-TOKEN_ENDPOINT = ''
+AUTHORIZATION_ENDPOINT = 'http://localhost:8888/oauth/authorize'
+TOKEN_ENDPOINT = 'http://localhost:8888/oauth/token'
 
 #add this in your IDP as redirect URI
 REDIRECT_URI = 'http://localhost:5555/callback'
@@ -94,6 +94,41 @@ def refresh():
     received_at = int(time.time())
     return redirect(url_for('display_tokens'))
 
+@app.route('/logout')
+def logout():
+    id_token = request.cookies.get('_a')
+    print(f"ID Token from cookie: {id_token}")
+    if id_token:
+        logout_url = (
+            f"http://localhost:8888/end_session?"
+            f"post_logout_redirect_uri=http://localhost:5555"
+            f"&id_token_hint={id_token}"
+        )
+        print("Open the following URL in your browser to logout:")
+        print(logout_url)
+        return redirect(logout_url)
+    else:
+        print("No ID token found in cookies.")
+
+
+#TODO: Implement backchannel logout
+@app.route('/backchannel', methods=['POST'])
+def backchannel():
+    print("Backchannel logout request received.")
+    query_params = request.args.to_dict()
+    headers = dict(request.headers)
+    print("Query parameters received:", query_params)
+    print("Headers received:", headers)
+
+    try:
+        form_data = request.form.to_dict()
+        print("Form data received:", form_data)
+    except Exception as e:
+        print("Failed to parse form data:", str(e))
+        form_data = None
+
+    return "Backchannel logout processed.", 200
+
 
 @app.route('/tokens')
 def display_tokens():
@@ -171,6 +206,14 @@ def display_tokens():
                 </form>
                 <span id="timer" style="margin-left: 20px; font-weight: bold;"></span>
             </div>
+
+            <div style="margin-top: 20px;">
+                <form action="/logout" method="get" style="display: inline;">
+                    <button type="submit">Logout</button>
+                </form>
+                <span id="timer" style="margin-left: 20px; font-weight: bold;"></span>
+            </div>
+
         </body>
     </html>
     """
