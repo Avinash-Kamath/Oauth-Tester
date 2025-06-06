@@ -8,15 +8,22 @@ from flask import Flask, request, make_response, redirect, url_for
 app = Flask(__name__)
 
 # === CONFIGURATION ===
-CLIENT_ID = ''
-CLIENT_SECRET = ''
-AUTHORIZATION_ENDPOINT = 'http://localhost:8888/oauth/authorize'
-TOKEN_ENDPOINT = 'http://localhost:8888/oauth/token'
+def load_config():
+    try:
+        with open('config.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise Exception("config.json file not found. Please create it with the required configuration.")
+    except json.JSONDecodeError:
+        raise Exception("Invalid JSON in config.json file.")
 
-#add this in your IDP as redirect URI
-REDIRECT_URI = 'http://localhost:5555/callback'
-SCOPES = 'openid profile email offline_access'
-
+config = load_config()
+CLIENT_ID = config['client_id']
+CLIENT_SECRET = config['client_secret']
+AUTHORIZATION_ENDPOINT = config['authorization_endpoint']
+TOKEN_ENDPOINT = config['token_endpoint']
+REDIRECT_URI = config['redirect_uri']
+SCOPES = config['scopes']
 
 def decode_jwt(jwt_token):
     try:
@@ -37,8 +44,8 @@ def index():
         f"response_type=code&"
         f"client_id={CLIENT_ID}&"
         f"redirect_uri={REDIRECT_URI}&"
-        f"provider=google&"
-        f"prompt=create&"
+        #f"provider=google&"
+        f"prompt=login&"
         f"scope={SCOPES}"
     )
     print("Open the following URL in your browser:")
