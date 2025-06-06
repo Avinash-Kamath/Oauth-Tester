@@ -10,7 +10,7 @@ app = Flask(__name__)
 # === CONFIGURATION ===
 def load_config():
     try:
-        with open('config.json', 'r') as f:
+        with open('local.config.json', 'r') as f:
             return json.load(f)
     except FileNotFoundError:
         raise Exception("config.json file not found. Please create it with the required configuration.")
@@ -22,7 +22,7 @@ CLIENT_ID = config['client_id']
 CLIENT_SECRET = config['client_secret']
 AUTHORIZATION_ENDPOINT = config['authorization_endpoint']
 TOKEN_ENDPOINT = config['token_endpoint']
-REDIRECT_URI = config['redirect_uri']
+REDIRECT_URI = "http://localhost:5555/callback"
 SCOPES = config['scopes']
 
 def decode_jwt(jwt_token):
